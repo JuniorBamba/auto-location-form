@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto Location Submit</title>
+</head>
+<body>
+  <h2>Getting your location...</h2>
+  <p id="status">Please wait...</p>
+
+  <script>
+    // Replace with your real entry IDs
+    const formBase = "https://docs.google.com/forms/d/e/1FAIpQLSfABC123xyz/formResponse";
+    const latEntry = "entry.1744991221";
+    const longEntry = "entry.1343092655";
+
+    function submitLocation(lat, lon) {
+      const formURL = `${formBase}?${latEntry}=${lat}&${longEntry}=${lon}`;
+      document.getElementById("status").innerText = `Location captured! Submitting...`;
+
+      // Create an invisible iframe to submit the form
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = formURL;
+      document.body.appendChild(iframe);
+
+      setTimeout(() => {
+        document.getElementById("status").innerText = "Submitted successfully!";
+      }, 2000);
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            submitLocation(lat, lon);
+          },
+          () => {
+            document.getElementById("status").innerText = "Location access denied or unavailable.";
+          }
+        );
+      } else {
+        document.getElementById("status").innerText = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    getLocation();
+  </script>
+</body>
+</html>
