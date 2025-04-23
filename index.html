@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Auto Location Submit</title>
+</head>
+<body>
+  <h1>Auto Location Form</h1>
+  <p>Sedang mendeteksi lokasi Anda...</p>
+
+  <script>
+    const formBase = "https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse";
+    const latEntry = "entry.1744991221";  // replace with your latitude entry ID
+    const longEntry = "entry.1343092655"; // replace with your longitude entry ID
+
+    function sendLocation(lat, long) {
+      const params = new URLSearchParams();
+      params.append(latEntry, lat);
+      params.append(longEntry, long);
+
+      fetch(formBase, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      });
+
+      document.body.innerHTML += "<p>Lokasi terkirim! Terima kasih 🙌</p>";
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            const lat = pos.coords.latitude;
+            const long = pos.coords.longitude;
+            sendLocation(lat, long);
+          },
+          err => {
+            document.body.innerHTML += "<p>Gagal mendapatkan lokasi. Harap izinkan akses lokasi.</p>";
+          }
+        );
+      } else {
+        document.body.innerHTML += "<p>Browser Anda tidak mendukung geolocation.</p>";
+      }
+    }
+
+    getLocation();
+  </script>
+</body>
+</html>
